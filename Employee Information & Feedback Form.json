@@ -1,0 +1,160 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "logicAppName": {
+            "type": "String",
+            "metadata": {
+                "description": "Name of the logic app."
+            }
+        },
+        "logicAppLocation": {
+            "defaultValue": "[resourceGroup().location]",
+            "allowedValues": [
+                "eastasia",
+                "southeastasia",
+                "centralus",
+                "eastus",
+                "eastus2",
+                "westus",
+                "northcentralus",
+                "southcentralus",
+                "northeurope",
+                "westeurope",
+                "japanwest",
+                "japaneast",
+                "brazilsouth",
+                "australiaeast",
+                "australiasoutheast",
+                "southindia",
+                "centralindia",
+                "westindia",
+                "canadacentral",
+                "canadaeast",
+                "uaecentral",
+                "westcentralus",
+                "westus2",
+                "[resourceGroup().location]"
+            ],
+            "type": "String",
+            "metadata": {
+                "description": "Location of the logic app."
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('logicAppName')]",
+            "location": "[parameters('logicAppLocation')]",
+            "properties": {
+                "state": "Disabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$authentication": {
+                            "defaultValue": {},
+                            "type": "SecureObject"
+                        }
+                    },
+                    "triggers": {
+                        "manual": {
+                            "correlation": {},
+                            "metadata": {
+                                "operationMetadataId": "b6984208-1b34-4c6a-b2f8-c81c1ccbedbd"
+                            },
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "GET",
+                                "triggerAuthenticationType": "All"
+                            },
+                            "conditions": []
+                        }
+                    },
+                    "actions": {
+                        "Initialize_variable": {
+                            "runAfter": {},
+                            "metadata": {
+                                "operationMetadataId": "02002d9b-43c0-4608-a4c5-3e94eb1f6828"
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "varFlowUrlPostRequest",
+                                        "type": "string",
+                                        "value": "http"
+                                    }
+                                ]
+                            }
+                        },
+                        "Compose": {
+                            "runAfter": {
+                                "Initialize_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "4a4782f1-507f-445c-af80-c4f1f91a08ee"
+                            },
+                            "type": "Compose",
+                            "inputs": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Employee Information & Feedback Form</title>\n  <link href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css\" rel=\"stylesheet\">\n</head>\n<body>\n  <div class=\"container mt-5\">\n    <div id=\"alert-container\"></div>\n    <h1 class=\"mb-4\">Employee Information & Feedback Form</h1>\n    <form id=\"employeeForm\">\n      <!-- Full Name -->\n      <div class=\"form-group\">\n        <label for=\"fullname\">Full Name</label>\n        <input type=\"text\" class=\"form-control\" id=\"fullname\" name=\"fullname\" required>\n      </div>\n\n      <!-- Date of Birth -->\n      <div class=\"form-group\">\n        <label for=\"dob\">Date of Birth</label>\n        <input type=\"date\" class=\"form-control\" id=\"dob\" name=\"dob\" required>\n      </div>\n\n      <!-- Gender -->\n      <div class=\"form-group\">\n        <label>Gender</label>\n        <select class=\"form-control\" id=\"gender\" name=\"gender\" required>\n          <option value=\"\">Select</option>\n          <option>Male</option>\n          <option>Female</option>\n          <option>Other</option>\n        </select>\n      </div>\n\n      <!-- Email -->\n      <div class=\"form-group\">\n        <label for=\"email\">Email Address</label>\n        <input type=\"email\" class=\"form-control\" id=\"email\" name=\"email\" required>\n      </div>\n\n      <!-- Phone -->\n      <div class=\"form-group\">\n        <label for=\"phone\">Phone Number</label>\n        <input type=\"tel\" pattern=\"[0-9]+\" class=\"form-control\" id=\"phone\" name=\"phone\" required>\n      </div>\n\n      <!-- Address -->\n      <div class=\"form-group\">\n        <label for=\"address\">Address</label>\n        <textarea class=\"form-control\" id=\"address\" name=\"address\" rows=\"2\" required></textarea>\n      </div>\n\n      <!-- Department -->\n      <div class=\"form-group\">\n        <label for=\"department\">Department / Unit</label>\n        <select class=\"form-control\" id=\"department\" name=\"department\" required>\n          <option value=\"\">Select</option>\n          <option>HR</option>\n          <option>Finance</option>\n          <option>IT</option>\n          <option>Admin</option>\n          <option>Operations</option>\n        </select>\n      </div>\n\n      <!-- Qualification -->\n      <div class=\"form-group\">\n        <label for=\"qualification\">Highest Qualification</label>\n        <select class=\"form-control\" id=\"qualification\" name=\"qualification\" required>\n          <option value=\"\">Select</option>\n          <option>BSc</option>\n          <option>MSc</option>\n          <option>PhD</option>\n          <option>Diploma</option>\n          <option>Other</option>\n        </select>\n      </div>\n\n      <!-- Next of Kin -->\n      <div class=\"form-group\">\n        <label for=\"nok\">Next of Kin</label>\n        <input type=\"text\" class=\"form-control\" id=\"nok\" name=\"nok\" required>\n      </div>\n\n      <!-- Next of Kin Contact -->\n      <div class=\"form-group\">\n        <label for=\"nokcontact\">Next of Kin Contact</label>\n        <input type=\"tel\" pattern=\"[0-9]+\" class=\"form-control\" id=\"nokcontact\" name=\"nokcontact\" required>\n      </div>\n\n      <!-- Marital Status -->\n      <div class=\"form-group\">\n        <label for=\"maritalstatus\">Marital Status</label>\n        <select class=\"form-control\" id=\"maritalstatus\" name=\"maritalstatus\" required>\n          <option value=\"\">Select</option>\n          <option>Single</option>\n          <option>Married</option>\n          <option>Divorced</option>\n          <option>Widowed</option>\n        </select>\n      </div>\n\n      <!-- Upload CV -->\n      <div class=\"form-group\">\n        <label for=\"cv\">Upload CV / Document</label>\n        <input type=\"file\" class=\"form-control-file\" id=\"cv\" name=\"cv\">\n      </div>\n\n      <!-- Skills -->\n      <div class=\"form-group\">\n        <label>Skills</label><br>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"checkbox\" name=\"skills\" value=\"Excel\"> Excel</div>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"checkbox\" name=\"skills\" value=\"Power BI\"> Power BI</div>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"checkbox\" name=\"skills\" value=\"SQL\"> SQL</div>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"checkbox\" name=\"skills\" value=\"Python\"> Python</div>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"checkbox\" name=\"skills\" value=\"Communication\"> Communication</div>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"checkbox\" name=\"skills\" value=\"Leadership\"> Leadership</div>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"checkbox\" name=\"skills\" value=\"Other\"> Other</div>\n      </div>\n\n      <!-- Work Experience -->\n      <div class=\"form-group\">\n        <label for=\"experience\">Work Experience (Years)</label>\n        <input type=\"number\" min=\"0\" class=\"form-control\" id=\"experience\" name=\"experience\" required>\n      </div>\n\n      <!-- Start Date -->\n      <div class=\"form-group\">\n        <label for=\"startdate\">Start Date (if selected)</label>\n        <input type=\"date\" class=\"form-control\" id=\"startdate\" name=\"startdate\">\n      </div>\n\n      <!-- Preferred Work Location -->\n      <div class=\"form-group\">\n        <label for=\"location\">Preferred Work Location</label>\n        <select class=\"form-control\" id=\"location\" name=\"location\" required>\n          <option value=\"\">Select</option>\n          <option>Lagos</option>\n          <option>Abuja</option>\n          <option>Remote</option>\n          <option>Hybrid</option>\n        </select>\n      </div>\n\n      <!-- Terms -->\n      <div class=\"form-group\">\n        <label>Agreed to Terms?</label><br>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"radio\" name=\"terms\" value=\"Yes\" required> Yes</div>\n        <div class=\"form-check form-check-inline\"><input class=\"form-check-input\" type=\"radio\" name=\"terms\" value=\"No\" required> No</div>\n      </div>\n\n      <!-- Feedback -->\n      <div class=\"form-group\">\n        <label for=\"feedback\">Feedback / Comments</label>\n        <textarea class=\"form-control\" id=\"feedback\" name=\"feedback\" rows=\"3\"></textarea>\n      </div>\n\n      <!-- Profile Picture -->\n      <div class=\"form-group\">\n        <label for=\"profilepic\">Profile Picture</label>\n        <input type=\"file\" class=\"form-control-file\" id=\"profilepic\" name=\"profilepic\">\n      </div>\n\n      <!-- Rating -->\n      <div class=\"form-group\">\n        <label>Rate this Form (1–5)</label>\n        <select class=\"form-control\" id=\"rating\" name=\"rating\" required>\n          <option value=\"\">Select</option>\n          <option>1</option>\n          <option>2</option>\n          <option>3</option>\n          <option>4</option>\n          <option>5</option>\n        </select>\n      </div>\n\n      <button type=\"submit\" class=\"btn btn-success\">Submit</button>\n    </form>\n  </div>\n</body>\n</html>\n"
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "Compose": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "metadata": {
+                                "operationMetadataId": "d9240c23-91b7-4b9f-8963-3e2002786e35"
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200,
+                                "headers": {
+                                    "Content-Type": "text/html"
+                                },
+                                "body": "@outputs('Compose')"
+                            }
+                        }
+                    }
+                },
+                "parameters": {},
+                "runtimeConfiguration": {
+                    "lifetime": {
+                        "unit": "Day",
+                        "count": 30
+                    },
+                    "collections": {
+                        "maximumItemCount": 5000
+                    },
+                    "performanceProfile": {
+                        "throttles": {
+                            "mode": "Low"
+                        }
+                    },
+                    "retryPolicy": {
+                        "type": "Exponential",
+                        "interval": "PT5M",
+                        "count": 2,
+                        "minimumInterval": "PT5M",
+                        "maximumInterval": "PT1H"
+                    },
+                    "usageConfiguration": {
+                        "name": "USER-0E8CCB1468C14A25B6A80554C08214C7"
+                    }
+                },
+                "integrationAccount": {
+                    "name": "d84fc4c7eddb480d97c5910568e78dba-westeurope",
+                    "id": "subscriptions/5072fcc3-8341-442e-9b98-4b441017c969/resourceGroups/d84fc4c7eddb480d97c5910568e78dba-ia/providers/Microsoft.Logic/integrationAccounts/d84fc4c7eddb480d97c5910568e78dba-westeurope",
+                    "type": "Microsoft.Logic/integrationAccounts"
+                }
+            }
+        }
+    ]
+}
